@@ -4,11 +4,11 @@ This is a starting point for new NextJS 13 projects based on the [Alex Eagleson'
 
 ## Getting Started
 
-'''bash
+```bash
 git clone https://github.com/userName/Repo New_Repo
 cd New_Repo
 git remote set-url origin https://github.com/userName/New_Repo
 git remote add upstream https://github.com/userName/Repo
 git push origin master
 git push --all
-'''
+```
