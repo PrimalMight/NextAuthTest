@@ -2,5 +2,6 @@
    "extends": ["next", "next/core-web-vitals", "eslint:recommended"],
    "globals": {
       "React": "readonly"
-   }
+   },
+   "ignorePatterns": ["**/lib/prismadb.ts", "**/pages/api/registration.ts"]
 }
