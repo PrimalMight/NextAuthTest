@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import bcrypt from 'bcrypt';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
+var bcrypt = require('bcryptjs');
 
 export default async function handler(
    req: NextApiRequest,
@@ -19,9 +20,10 @@ export default async function handler(
             },
          });
          res.status(200).json({ email: email });
-      } catch (err) {
-         console.log('err', err);
-         res.status(500).json({ msg: 'Internal server error' });
+      } catch (err: any) {
+         if (err.code === 'P2002')
+            res.status(500).json({ msg: 'Email is already in use.' });
+         else res.status(500).json({ msg: 'Something went wrong.' });
       }
    } else {
       res.status(405).json({ msg: 'Method not allowed' });

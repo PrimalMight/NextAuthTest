@@ -24,7 +24,7 @@ export default function SignIn(props: any): JSX.Element {
       const res = await signIn('credentials', {
          email: email,
          password: password,
-         redirect: false, // this bugs when bad login
+         redirect: false, // this bugs on true when bad login
          callbackUrl: callbackUrl ? callbackUrl : '/',
       });
       if (res) {

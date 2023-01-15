@@ -3,6 +3,8 @@ import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import prisma from '../../../lib/prismadb';
 
+var bcrypt = require('bcryptjs');
+
 export const authOptions: NextAuthOptions = {
    session: {
       strategy: 'jwt',
@@ -20,18 +22,22 @@ export const authOptions: NextAuthOptions = {
          name: 'Credentials',
          credentials: {},
          async authorize(credentials) {
-            // authorize should also have req as second parameter
             const { email, password } = credentials as {
                email: string;
                password: string;
             };
 
-            // Add logic here to look up the user from the credentials supplied
-            //console.log('email', email);
-            //console.log('password', password);
+            const user = await prisma?.user.findUnique({
+               where: { email: email },
+            });
+            if (!user) return null;
 
-            if (email === 'john@gmail.com' && password === '123456') {
-               return { id: '1234', name: 'John Doe', email: 'john@gmail.com' };
+            const hash: any = user?.password;
+            const check = bcrypt.compareSync(password, hash);
+
+            if (check) {
+               console.log('user: ', user, 'just logged in.');
+               return { id: user?.id, name: user?.name, email: user?.email };
             } else {
                return null;
             }
@@ -45,6 +51,13 @@ export const authOptions: NextAuthOptions = {
          // Allows callback URLs on the same origin
          else if (new URL(url).origin === baseUrl) return url;
          return baseUrl;
+      },
+      async jwt({ token, user }) {
+         return { ...token, ...user };
+      },
+      async session({ session, token }) {
+         session.user = token;
+         return session;
       },
    },
    secret: process.env.NEXTAUTH_SECRET,
