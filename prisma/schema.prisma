@@ -48,6 +48,9 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  days          Day[]
+  weeks         Week[]
+  months        Month[]
 }
 
 model VerificationToken {
@@ -56,4 +59,39 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Day {
+  id        String   @id @default(cuid())
+  date      DateTime
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hours     Int
+
+  @@index([userId])
+  @@unique([userId, date])
+}
+
+model Week {
+   id        String   @id @default(cuid())
+   startday  DateTime
+   endday    DateTime
+   userId    String
+   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+   hours     Int
+   
+   @@index([userId])
+   @@unique([userId, startday])
+}
+
+model Month {
+   id        String   @id @default(cuid())
+   startday  DateTime
+   endday    DateTime
+   userId    String
+   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+   hours     Int
+   
+   @@index([userId])
+   @@unique([userId, startday])
 }
